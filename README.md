@@ -1,0 +1,1 @@
+Been wanting to build a financial managing app. Let's see how dedicated I will be with building this.
