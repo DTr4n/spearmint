@@ -7,6 +7,9 @@ class Account(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=2)
     plaid_account_id = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
 class Transaction(models.Model):
     account = models.ForeignKey(Account, related_name='transactions', on_delete=models.CASCADE)
     date = models.DateField()
@@ -14,3 +17,6 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.CharField(max_length=100)
     plaid_transaction_id = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.name} - {self.amount}"
