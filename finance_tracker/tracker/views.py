@@ -2,10 +2,12 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+import json
 import plaid
 from plaid.api import plaid_api
 from plaid.model.products import Products
 from plaid.model.country_code import CountryCode
+from plaid.model.item_public_token_exchange_request import ItemPublicTokenExchangeRequest
 from plaid.model.link_token_create_request import LinkTokenCreateRequest
 from plaid.model.link_token_create_request_user import LinkTokenCreateRequestUser
 
@@ -40,10 +42,16 @@ def index(request):
     link_token = response['link_token']
     return render(request, 'tracker/index.html', {'link_token': link_token})
 
-@csrf_exempt
 def get_access_token(request):
     if request.method == 'POST':
-        public_token = request.POST.get('public_token')
-        exchange_response = client.Item.public_token.exchange(public_token)
+        data = json.loads(request.body.decode('utf-8'))
+        public_token = data.get('public_token')
+        if not public_token:
+            return JsonResponse({'error': 'Public token is required'}, status=400)
+
+        exchange_request = ItemPublicTokenExchangeRequest(public_token=public_token)
+        exchange_response = client.item_public_token_exchange(exchange_request)
         access_token = exchange_response['access_token']
         return JsonResponse({'access_token': access_token})
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+

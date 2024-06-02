@@ -16,14 +16,16 @@
         token: '{{ link_token }}',
         onSuccess: function(public_token, metadata) {
           // Send the public_token to server
-          fetch('/get_access_token/', {
+          fetch('/tracker/get_access_token/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              // TODO: If I send csrftoken here, then do i need csrf exempt decorator?
               'X-CSRFToken': '{{ csrf_token }}',
             },
             body: JSON.stringify({ public_token: public_token }),
-          }).then(response = response.json())
+            credentials: 'include'
+          }).then(response => response.json())
             .then(data => {
               console.log('Access token:', data.access_token);
             })
