@@ -9,6 +9,7 @@
 <body>
   <h1>Connect Your Bank Account</h1>
   <button id="link-button">Link Account</button>
+  <button id="get-transactions-button">Get Transactions</button>
   {% load static %}
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -39,6 +40,20 @@
 
       document.getElementById('link-button').onclick = function() {
         linkHandler.open();
+      };
+
+      document.getElementById('get-transactions-button').onclick = function() {
+        fetch('/tracker/get_transactions/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',
+          },
+          credentials: 'include'
+        }).then(response => response.json())
+          .then(data => {
+            console.log('Status:', data.message);
+          });
       };
     });
   </script>
