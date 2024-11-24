@@ -1,6 +1,6 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { PieChart as PieChartIcon, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 const networthData = [
   { month: 'Jan', amount: 25000 },
@@ -11,8 +11,15 @@ const networthData = [
   { month: 'Jun', amount: 35000 },
 ];
 
+const data = [
+  { name: 'Savings', value: 6200 }, // Savings data
+  { name: 'Spending', value: 2850 }, // Spending data
+];
+
 const netWorth = networthData[networthData.length - 1].amount; // Get the most recent net worth value
-const netWorthColor = netWorth >= 0 ? 'text-emerald-600' : 'text-red-600'; // Green if positive, red if negative
+const netWorthColor = netWorth >= 0 ? 'text-emerald-600' : 'text-red-600'; // Green if positive, red if negative\
+const totalIncome = 6200 - 2850; // TODO: Replace with your dynamic calculation
+const COLORS = ['#059669', '#EF4444']; // Green for Savings, Red for Spending
 
 const transactions = [
   {
@@ -83,28 +90,33 @@ export default function Overview() {
         {/* Monthly Summary */}
         <div className="bg-white p-6 rounded-xl shadow-sm">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Monthly Summary</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-emerald-50 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-emerald-600">Income</p>
-                  <p className="text-2xl font-bold text-emerald-700">$6,240</p>
-                </div>
-                <ArrowUpRight className="h-8 w-8 text-emerald-500" />
-              </div>
+
+          {/* Pie Chart Container */}
+          <div className="relative flex justify-center items-center">
+            {/* Centered Text */}
+            <div className="absolute flex flex-col items-center">
+              <p className="text-lg font-medium text-gray-800">Income</p>
+              <p className={`text-2xl font-bold ${totalIncome >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                {totalIncome >= 0 ? `+$${totalIncome.toLocaleString()}` : `-$${Math.abs(totalIncome).toLocaleString()}`}
+              </p>
             </div>
-            <div className="p-4 bg-red-50 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-red-600">Expenses</p>
-                  <p className="text-2xl font-bold text-red-700">$2,850</p>
-                </div>
-                <ArrowDownRight className="h-8 w-8 text-red-500" />
-              </div>
-            </div>
-          </div>
-          <div className="mt-6 flex justify-center">
-            <PieChartIcon className="h-48 w-48 text-emerald-500" />
+
+            {/* Pie Chart */}
+            <ResponsiveContainer width={300} height={300}>
+              <PieChart>
+                <Pie
+                  data={data}
+                  innerRadius={80} // Space for text
+                  outerRadius={100}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
