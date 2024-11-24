@@ -11,6 +11,9 @@ const networthData = [
   { month: 'Jun', amount: 35000 },
 ];
 
+const netWorth = networthData[networthData.length - 1].amount; // Get the most recent net worth value
+const netWorthColor = netWorth >= 0 ? 'text-emerald-600' : 'text-red-600'; // Green if positive, red if negative
+
 const transactions = [
   {
     id: '1',
@@ -46,7 +49,15 @@ export default function Overview() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Net Worth Chart */}
         <div className="bg-white p-6 rounded-xl shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Net Worth</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold text-gray-800">Net Worth</h2>
+            {/* Display Current Net Worth on the same line */}
+            <span className={`${netWorthColor} text-xl font-semibold`}>
+              ${netWorth.toLocaleString()}
+            </span>
+          </div>
+
+          {/* Net Worth Chart */}
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={networthData}>

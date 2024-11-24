@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -16,6 +16,7 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const [isExpanded, setIsExpanded] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,13 +28,26 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Static Sidebar */}
-      <nav className="bg-white shadow-lg w-64 flex flex-col fixed h-full">
+      <nav className={`bg-white shadow-lg transition-all duration-300 ${
+        isExpanded ? 'w-64' : 'w-20'
+      } flex flex-col fixed h-full`}>
         <div className="p-4 flex items-center justify-between border-b">
           <div className="flex items-center space-x-3">
             <Sprout className="h-8 w-8 text-emerald-500" />
-            <span className="text-xl font-bold text-emerald-900">Spearmint</span>
+            {isExpanded && (
+              <span className="text-xl font-bold text-emerald-900">Spearmint</span>
+            )}
           </div>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="p-2 rounded-lg hover:bg-emerald-50 text-emerald-700"
+          >
+            {isExpanded ? (
+              <ChevronLeft className="h-5 w-5" />
+            ) : (
+              <ChevronRight className="h-5 w-5" />
+            )}
+          </button>
         </div>
 
         <div className="flex-1 py-6">
@@ -50,15 +64,17 @@ export default function Layout({ children }: LayoutProps) {
                 }`}
               >
                 <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                {isExpanded && <span>{item.label}</span>}
               </button>
             );
           })}
         </div>
       </nav>
 
-      <main className="flex-1 ml-64">
-        {/* Header Bar */}
+      <main className={`flex-1 transition-all duration-300 ${
+        isExpanded ? 'ml-64' : 'ml-20'
+      }`}>
+        {/* Header bar */}
         <div className="bg-white shadow-md p-4 flex items-center justify-between">
           <div className="flex-1"></div>
           {/* Settings Button */}
